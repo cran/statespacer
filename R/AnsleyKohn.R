@@ -18,7 +18,7 @@ PACMat <- function(A) {
 
   # Multivariate, for a single partial autocorrelation matrix
   if (is.matrix(A)) {
-    return(solve(t(chol(diag(dim(A)[1]) + A %*% t(A)))) %*% A)
+    return(crossprod(solve(chol(diag(dim(A)[[1]]) + tcrossprod(A))), A))
   }
 
   # Multivariate, for multiple partial autocorrelation matrices
@@ -47,6 +47,7 @@ PACMat <- function(A) {
 #' @noRd
 TransformPAC <- function(P) {
 
+  # Initialise
   coeff_new <- P
 
   # If univariate, computations are less expensive
@@ -55,7 +56,8 @@ TransformPAC <- function(P) {
       for (i in 1:(length(P) - 1)) {
         coeff_old <- coeff_new
         for (j in 1:i) {
-          coeff_new[j] <- coeff_old[j] - coeff_new[i + 1] * coeff_old[i - j + 1]
+          coeff_new[[j]] <- coeff_old[[j]] -
+            coeff_new[[i + 1]] * coeff_old[[i - j + 1]]
         }
       }
     }
@@ -64,19 +66,18 @@ TransformPAC <- function(P) {
 
   # Multivariate
   # Initialise with i = 0
-  sigma_new <- diag(dim(P)[1]) - coeff_new[,,1] %*% t(coeff_new[,,1])
+  sigma_new <- diag(dim(P)[[1]]) - tcrossprod(coeff_new[, , 1])
 
-  if (dim(P)[3] > 1) {
+  if (dim(P)[[3]] > 1) {
 
     # i = 0
     coeff_star_new <- P
-    coeff_star_new[,,1] <- t(P[,,1])
-    sigma_star_new <- diag(dim(P)[1]) -
-      coeff_star_new[,,1] %*% t(coeff_star_new[,,1])
+    coeff_star_new[, , 1] <- t(P[, , 1])
+    sigma_star_new <- diag(dim(P)[[1]]) - tcrossprod(coeff_star_new[, , 1])
     L <- t(chol(sigma_new))
     L_star <- t(chol(sigma_star_new))
 
-    for (i in 1:(dim(P)[3] - 1)) {
+    for (i in 1:(dim(P)[[3]] - 1)) {
 
       # Storing former values
       coeff_old <- coeff_new
@@ -85,22 +86,27 @@ TransformPAC <- function(P) {
       sigma_star_old <- sigma_star_new
 
       # Calculating new values
-      coeff_new[,,i + 1] <- L %*% P[,,i + 1] %*% solve(L_star)
-      sigma_new <- sigma_old -
-        coeff_new[,,i + 1] %*% sigma_star_old %*% t(coeff_new[,,i + 1])
-      if (i < (dim(P)[3] - 1)) {
-        coeff_star_new[,,i + 1] <- L_star %*% t(P[,,i + 1]) %*% solve(L)
-        sigma_star_new <- sigma_star_old -
-          coeff_star_new[,,i + 1] %*% sigma_old %*% t(coeff_star_new[,,i + 1])
+      coeff_new[, , i + 1] <- L %*% P[, , i + 1] %*% solve(L_star)
+      sigma_new <- sigma_old - tcrossprod(
+        coeff_new[, , i + 1] %*% sigma_star_old,
+        coeff_new[, , i + 1]
+      )
+      if (i < (dim(P)[[3]] - 1)) {
+        coeff_star_new[, , i + 1] <- tcrossprod(L_star, P[, , i + 1]) %*%
+          solve(L)
+        sigma_star_new <- sigma_star_old - tcrossprod(
+          coeff_star_new[, , i + 1] %*% sigma_old,
+          coeff_star_new[, , i + 1]
+        )
         L_star <- t(chol(sigma_star_new))
         L <- t(chol(sigma_new))
       }
       for (j in 1:i) {
-        coeff_new[,,j] <- coeff_old[,,j] -
-          coeff_new[,,i + 1] %*% coeff_star_old[,,i - j + 1]
-        if (i < (dim(P)[3] - 1)) {
-          coeff_star_new[,,j] <- coeff_star_old[,,j] -
-            coeff_star_new[,,i + 1] %*% coeff_old[,,i - j + 1]
+        coeff_new[, , j] <- coeff_old[, , j] -
+          coeff_new[, , i + 1] %*% coeff_star_old[, , i - j + 1]
+        if (i < (dim(P)[[3]] - 1)) {
+          coeff_star_new[, , j] <- coeff_star_old[, , j] -
+            coeff_star_new[, , i + 1] %*% coeff_old[, , i - j + 1]
         }
       }
     }
@@ -138,28 +144,30 @@ TransformPAC <- function(P) {
 #'
 #' @examples
 #' CoeffARMA(A = stats::rnorm(2), ar = 1, ma = 1)
-#'
 #' @export
 CoeffARMA <- function(A, variance = NULL, ar = 1, ma = 0) {
 
   # Check for erroneous input
   if (ar < 0) {
-    stop("The order of the autoregressive part must be >= 0.")
+    stop("The order of the autoregressive part must be >= 0.", call. = FALSE)
   }
   if (ma < 0) {
-    stop("The order of the moving average part must be >= 0.")
+    stop("The order of the moving average part must be >= 0.", call. = FALSE)
   }
   if (ar + ma == 0) {
-    stop("At least one of the orders of the AR and MA parts must be positive.")
+    stop(
+      "At least one of the orders of the AR and MA parts must be positive.",
+      call. = FALSE
+    )
   }
 
   # Initialise list to return
   result <- list()
 
   # Check if array contains square matrices
-  if(is.array(A)) {
-    if (dim(A)[1] != dim(A)[2]) {
-      stop("Matrices in `A` must be square matrices.")
+  if (is.array(A)) {
+    if (dim(A)[1] != dim(A)[[2]]) {
+      stop("Matrices in `A` must be square matrices.", call. = FALSE)
     }
   }
 
@@ -185,26 +193,30 @@ CoeffARMA <- function(A, variance = NULL, ar = 1, ma = 0) {
 
   # Obtain coefficient matrices for AR part
   if (ar > 0) {
-    P_ar <- P[,,1:ar, drop = FALSE]
+    P_ar <- P[, , 1:ar, drop = FALSE]
     ar_part <- TransformPAC(P_ar)
     L_ar <- t(chol(ar_part$variance))
     L_ar_inv <- solve(L_ar)
     result$ar <- array(
-      apply(ar_part$coeff, 3,
-            function(x) L %*% L_ar_inv %*% x %*% L_ar %*% L_inv),
+      apply(
+        ar_part$coeff, 3,
+        function(x) L %*% L_ar_inv %*% x %*% L_ar %*% L_inv
+      ),
       dim = dim(ar_part$coeff)
     )
   }
 
   # Obtain coefficient matrices for MA part
   if (ma > 0) {
-    P_ma <- P[,,(ar + 1):(ar + ma), drop = FALSE]
+    P_ma <- P[, , (ar + 1):(ar + ma), drop = FALSE]
     ma_part <- TransformPAC(P_ma)
     L_ma <- t(chol(ma_part$variance))
     L_ma_inv <- solve(L_ma)
     result$ma <- -array( # Note the minus sign
-      apply(ma_part$coeff, 3,
-            function(x) L %*% L_ma_inv %*% x %*% L_ma %*% L_inv),
+      apply(
+        ma_part$coeff, 3,
+        function(x) L %*% L_ma_inv %*% x %*% L_ma %*% L_inv
+      ),
       dim = dim(ma_part$coeff)
     )
   }

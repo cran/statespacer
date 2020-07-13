@@ -9,16 +9,17 @@ knitr::opts_chunk$set(
 library(statespacer)
 
 # Load the dataset
+library(datasets)
 Data <- matrix(window(sunspot.year, start = 1770, end = 1869))
 
 # Estimate the ARIMA model
-fit <- StateSpaceFit(y = Data,
-                     H_format = matrix(0),
-                     local_level_ind = TRUE,
-                     arima_list = list(c(3, 0, 0)),
-                     format_level = matrix(0),
-                     initial = c(0.5*log(var(Data)), 0, 0, 0))
-
+fit <- statespacer(y = Data,
+                   H_format = matrix(0),
+                   local_level_ind = TRUE,
+                   arima_list = list(c(3, 0, 0)),
+                   format_level = matrix(0),
+                   initial = c(0.5*log(var(Data)), 0, 0, 0),
+                   verbose = TRUE)
 
 ## -----------------------------------------------------------------------------
 # Coefficients of the ARMA component
@@ -54,10 +55,11 @@ Data <- matrix(log(AirPassengers))
 sarima_list <- list(list(s = c(12, 1), ar = c(0, 0), i = c(1, 1), ma = c(1, 1)))
 
 # Fit the SARIMA model
-fit <- StateSpaceFit(y = Data,
-                     H_format = matrix(0),
-                     sarima_list = sarima_list,
-                     initial = c(0.5*log(var(diff(Data))), 0, 0))
+fit <- statespacer(y = Data,
+                   H_format = matrix(0),
+                   sarima_list = sarima_list,
+                   initial = c(0.5*log(var(diff(Data))), 0, 0),
+                   verbose = TRUE)
 
 ## -----------------------------------------------------------------------------
 # Coefficients of the ARMA component

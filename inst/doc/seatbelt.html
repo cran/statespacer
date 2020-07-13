@@ -27,6 +27,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -327,11 +343,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb1-6"><a href="#cb1-6"></a>Data &lt;-<span class="st"> </span>Seatbelts</span>
 <span id="cb1-7"><a href="#cb1-7"></a></span>
 <span id="cb1-8"><a href="#cb1-8"></a><span class="co"># Data preparation</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a>Data &lt;-<span class="st"> </span>Seatbelts</span>
-<span id="cb1-10"><a href="#cb1-10"></a></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># The log of &quot;drivers&quot;, &quot;front&quot;, and &quot;rear&quot; will be used as dependent variables</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># The log of &quot;PetrolPrice&quot; and &quot;kms&quot; will be used as explanatory variables</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>Data[, <span class="kw">c</span>(<span class="st">&quot;drivers&quot;</span>, <span class="st">&quot;front&quot;</span>, <span class="st">&quot;rear&quot;</span>, <span class="st">&quot;PetrolPrice&quot;</span>, <span class="st">&quot;kms&quot;</span>)] &lt;-<span class="st"> </span><span class="kw">log</span>(Data[, <span class="kw">c</span>(<span class="st">&quot;drivers&quot;</span>, <span class="st">&quot;front&quot;</span>, <span class="st">&quot;rear&quot;</span>, <span class="st">&quot;PetrolPrice&quot;</span>, <span class="st">&quot;kms&quot;</span>)])</span></code></pre></div>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># The log of &quot;drivers&quot;, &quot;front&quot;, and &quot;rear&quot; will be used as dependent variables</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># The log of &quot;PetrolPrice&quot; and &quot;kms&quot; will be used as explanatory variables</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>Data[, <span class="kw">c</span>(<span class="st">&quot;drivers&quot;</span>, <span class="st">&quot;front&quot;</span>, <span class="st">&quot;rear&quot;</span>, <span class="st">&quot;PetrolPrice&quot;</span>, <span class="st">&quot;kms&quot;</span>)] &lt;-<span class="st"> </span><span class="kw">log</span>(Data[, <span class="kw">c</span>(<span class="st">&quot;drivers&quot;</span>, <span class="st">&quot;front&quot;</span>, <span class="st">&quot;rear&quot;</span>, <span class="st">&quot;PetrolPrice&quot;</span>, <span class="st">&quot;kms&quot;</span>)])</span></code></pre></div>
 </div>
 <div id="univariate-model-with-deterministic-level-and-seasonal" class="section level2">
 <h2>Univariate model with deterministic level and seasonal</h2>
@@ -358,29 +372,27 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-20"><a href="#cb2-20"></a>format_BSM_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">matrix</span>(<span class="dv">0</span>))</span>
 <span id="cb2-21"><a href="#cb2-21"></a></span>
 <span id="cb2-22"><a href="#cb2-22"></a><span class="co"># Fitting the model</span></span>
-<span id="cb2-23"><a href="#cb2-23"></a>fit &lt;-<span class="st"> </span><span class="kw">StateSpaceFit</span>(<span class="dt">y =</span> y,</span>
-<span id="cb2-24"><a href="#cb2-24"></a>                     <span class="dt">local_level_ind =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb2-25"><a href="#cb2-25"></a>                     <span class="dt">BSM_vec =</span> BSM_vec,</span>
-<span id="cb2-26"><a href="#cb2-26"></a>                     <span class="dt">addvar_list =</span> addvar_list,</span>
-<span id="cb2-27"><a href="#cb2-27"></a>                     <span class="dt">format_level =</span> format_level, </span>
-<span id="cb2-28"><a href="#cb2-28"></a>                     <span class="dt">format_BSM_list =</span> format_BSM_list,</span>
-<span id="cb2-29"><a href="#cb2-29"></a>                     <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
-<span id="cb2-30"><a href="#cb2-30"></a>                     <span class="dt">initial =</span> <span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">var</span>(y)))</span>
-<span id="cb2-31"><a href="#cb2-31"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-05-12 15:03:47</span></span>
-<span id="cb2-32"><a href="#cb2-32"></a><span class="co">#&gt; Parameter scaling:[1] 1</span></span>
-<span id="cb2-33"><a href="#cb2-33"></a><span class="co">#&gt; initial  value -0.443442 </span></span>
-<span id="cb2-34"><a href="#cb2-34"></a><span class="co">#&gt; final  value -0.735372 </span></span>
-<span id="cb2-35"><a href="#cb2-35"></a><span class="co">#&gt; converged</span></span>
-<span id="cb2-36"><a href="#cb2-36"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-05-12 15:03:47</span></span>
-<span id="cb2-37"><a href="#cb2-37"></a><span class="co">#&gt; Time difference of 0.353266000747681 secs</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#&gt; Warning in sqrt(diag(as.matrix(Nmat[, , t + 1]))): NaNs produced</span></span>
-<span id="cb2-39"><a href="#cb2-39"></a></span>
-<span id="cb2-40"><a href="#cb2-40"></a><span class="co">#&gt; Warning in sqrt(diag(as.matrix(Nmat[, , t + 1]))): NaNs produced</span></span></code></pre></div>
-<p>The warning can be ignored, it’s a common warning that arises when calculating the square root of a variance that equals a small negative number, like -1e-13. Let’s check out the estimates:</p>
+<span id="cb2-23"><a href="#cb2-23"></a>fit &lt;-<span class="st"> </span><span class="kw">statespacer</span>(<span class="dt">y =</span> y,</span>
+<span id="cb2-24"><a href="#cb2-24"></a>                   <span class="dt">local_level_ind =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-25"><a href="#cb2-25"></a>                   <span class="dt">BSM_vec =</span> BSM_vec,</span>
+<span id="cb2-26"><a href="#cb2-26"></a>                   <span class="dt">addvar_list =</span> addvar_list,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>                   <span class="dt">format_level =</span> format_level, </span>
+<span id="cb2-28"><a href="#cb2-28"></a>                   <span class="dt">format_BSM_list =</span> format_BSM_list,</span>
+<span id="cb2-29"><a href="#cb2-29"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb2-30"><a href="#cb2-30"></a>                   <span class="dt">initial =</span> <span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">var</span>(y)),</span>
+<span id="cb2-31"><a href="#cb2-31"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-32"><a href="#cb2-32"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-13 14:23:01</span></span>
+<span id="cb2-33"><a href="#cb2-33"></a><span class="co">#&gt; Parameter scaling:[1] 1</span></span>
+<span id="cb2-34"><a href="#cb2-34"></a><span class="co">#&gt; initial  value -0.443442 </span></span>
+<span id="cb2-35"><a href="#cb2-35"></a><span class="co">#&gt; final  value -0.735372 </span></span>
+<span id="cb2-36"><a href="#cb2-36"></a><span class="co">#&gt; converged</span></span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-13 14:23:01</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#&gt; Time difference of 0.118407964706421 secs</span></span></code></pre></div>
+<p>Let’s check out the estimates:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># The estimated variance of the observation disturbance</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;             [,1]</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; [1,] 0.007402015</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; [1,] 0.007402481</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="co"># Smoothed estimate of the level</span></span>
 <span id="cb3-7"><a href="#cb3-7"></a>fit<span class="op">$</span>smoothed<span class="op">$</span>level[<span class="dv">1</span>,]</span>
@@ -409,58 +421,59 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># By setting the entries in the format to 1, the component becomes stochastic</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>format_level &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>)</span>
 <span id="cb4-3"><a href="#cb4-3"></a>format_BSM_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">matrix</span>(<span class="dv">1</span>))</span>
-<span id="cb4-4"><a href="#cb4-4"></a>fit &lt;-<span class="st"> </span><span class="kw">StateSpaceFit</span>(<span class="dt">y =</span> y,</span>
-<span id="cb4-5"><a href="#cb4-5"></a>                     <span class="dt">local_level_ind =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb4-6"><a href="#cb4-6"></a>                     <span class="dt">BSM_vec =</span> BSM_vec,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>                     <span class="dt">addvar_list =</span> addvar_list,</span>
-<span id="cb4-8"><a href="#cb4-8"></a>                     <span class="dt">format_level =</span> format_level,</span>
-<span id="cb4-9"><a href="#cb4-9"></a>                     <span class="dt">format_BSM_list =</span> format_BSM_list,</span>
-<span id="cb4-10"><a href="#cb4-10"></a>                     <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
-<span id="cb4-11"><a href="#cb4-11"></a>                     <span class="dt">initial =</span> <span class="kw">log</span>(<span class="kw">var</span>(y)))</span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-05-12 15:03:48</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; initial  value -0.172423 </span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; iter  10 value -0.893962</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; iter  20 value -0.915493</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; iter  30 value -0.915515</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; final  value -0.915517 </span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; converged</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-05-12 15:03:55</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; Time difference of 7.04729104042053 secs</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a></span>
-<span id="cb4-23"><a href="#cb4-23"></a><span class="co"># The estimated variance of the observation disturbance</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
-<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt;            [,1]</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; [1,] 0.00378617</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="co"># The estimated variance of the level disturbance</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>Q<span class="op">$</span>level</span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt;              [,1]</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt; [1,] 0.0002676916</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a></span>
-<span id="cb4-33"><a href="#cb4-33"></a><span class="co"># The estimated variance of the seasonal disturbance</span></span>
-<span id="cb4-34"><a href="#cb4-34"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>Q<span class="op">$</span>BSM12</span>
-<span id="cb4-35"><a href="#cb4-35"></a><span class="co">#&gt;              [,1]</span></span>
-<span id="cb4-36"><a href="#cb4-36"></a><span class="co">#&gt; [1,] 1.161414e-06</span></span>
-<span id="cb4-37"><a href="#cb4-37"></a></span>
-<span id="cb4-38"><a href="#cb4-38"></a><span class="co"># Smoothed estimate of the coefficient of log &quot;PetrolPrice&quot;</span></span>
-<span id="cb4-39"><a href="#cb4-39"></a>fit<span class="op">$</span>smoothed<span class="op">$</span>addvar_coeff[<span class="dv">1</span>, <span class="dv">1</span>]</span>
-<span id="cb4-40"><a href="#cb4-40"></a><span class="co">#&gt; [1] -0.2913938</span></span>
-<span id="cb4-41"><a href="#cb4-41"></a></span>
-<span id="cb4-42"><a href="#cb4-42"></a><span class="co"># Smoothed estimate of the coefficient of the &quot;law&quot; dummy</span></span>
-<span id="cb4-43"><a href="#cb4-43"></a>fit<span class="op">$</span>smoothed<span class="op">$</span>addvar_coeff[<span class="dv">1</span>, <span class="dv">2</span>]</span>
-<span id="cb4-44"><a href="#cb4-44"></a><span class="co">#&gt; [1] -0.2377375</span></span>
-<span id="cb4-45"><a href="#cb4-45"></a></span>
-<span id="cb4-46"><a href="#cb4-46"></a><span class="co"># Plot the data next to the smoothed level + explanatory variables components</span></span>
-<span id="cb4-47"><a href="#cb4-47"></a><span class="kw">plot</span>(Data[, <span class="kw">c</span>(<span class="st">&quot;drivers&quot;</span>)], <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="fl">6.95</span>, <span class="fl">8.1</span>),</span>
-<span id="cb4-48"><a href="#cb4-48"></a>     <span class="dt">xlab =</span> <span class="st">&quot;year&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;logarithm of drivers&quot;</span>)</span>
-<span id="cb4-49"><a href="#cb4-49"></a><span class="kw">lines</span>(<span class="kw">seq</span>(<span class="kw">tsp</span>(Data)[<span class="dv">1</span>], <span class="kw">tsp</span>(Data)[<span class="dv">2</span>], <span class="dv">1</span><span class="op">/</span><span class="kw">tsp</span>(Data)[<span class="dv">3</span>]), </span>
-<span id="cb4-50"><a href="#cb4-50"></a>      fit<span class="op">$</span>smoothed<span class="op">$</span>level <span class="op">+</span><span class="st"> </span>fit<span class="op">$</span>smoothed<span class="op">$</span>addvar, <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span>
-<span id="cb4-51"><a href="#cb4-51"></a><span class="kw">legend</span>(<span class="dv">1978</span>, <span class="fl">8.09</span>, <span class="kw">c</span>(<span class="st">&quot;log(drivers)&quot;</span>, <span class="st">&quot;level + regression effects&quot;</span>), </span>
-<span id="cb4-52"><a href="#cb4-52"></a>       <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">lwd=</span><span class="kw">c</span>(<span class="fl">2.5</span>, <span class="fl">2.5</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>))</span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4"></a>fit &lt;-<span class="st"> </span><span class="kw">statespacer</span>(<span class="dt">y =</span> y,</span>
+<span id="cb4-5"><a href="#cb4-5"></a>                   <span class="dt">local_level_ind =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb4-6"><a href="#cb4-6"></a>                   <span class="dt">BSM_vec =</span> BSM_vec,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>                   <span class="dt">addvar_list =</span> addvar_list,</span>
+<span id="cb4-8"><a href="#cb4-8"></a>                   <span class="dt">format_level =</span> format_level,</span>
+<span id="cb4-9"><a href="#cb4-9"></a>                   <span class="dt">format_BSM_list =</span> format_BSM_list,</span>
+<span id="cb4-10"><a href="#cb4-10"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb4-11"><a href="#cb4-11"></a>                   <span class="dt">initial =</span> <span class="kw">log</span>(<span class="kw">var</span>(y)),</span>
+<span id="cb4-12"><a href="#cb4-12"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-13 14:23:01</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; initial  value -0.172423 </span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; iter  10 value -0.893962</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; iter  20 value -0.915493</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; iter  30 value -0.915515</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; final  value -0.915517 </span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; converged</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-13 14:23:03</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Time difference of 1.43063807487488 secs</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co"># The estimated variance of the observation disturbance</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt;             [,1]</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; [1,] 0.003786183</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="co"># The estimated variance of the level disturbance</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>Q<span class="op">$</span>level</span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt;              [,1]</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="co">#&gt; [1,] 0.0002676875</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="co"># The estimated variance of the seasonal disturbance</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>Q<span class="op">$</span>BSM12</span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="co">#&gt;              [,1]</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="co">#&gt; [1,] 1.161438e-06</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="co"># Smoothed estimate of the coefficient of log &quot;PetrolPrice&quot;</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a>fit<span class="op">$</span>smoothed<span class="op">$</span>addvar_coeff[<span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb4-41"><a href="#cb4-41"></a><span class="co">#&gt; [1] -0.2913944</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="co"># Smoothed estimate of the coefficient of the &quot;law&quot; dummy</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a>fit<span class="op">$</span>smoothed<span class="op">$</span>addvar_coeff[<span class="dv">1</span>, <span class="dv">2</span>]</span>
+<span id="cb4-45"><a href="#cb4-45"></a><span class="co">#&gt; [1] -0.2377374</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a></span>
+<span id="cb4-47"><a href="#cb4-47"></a><span class="co"># Plot the data next to the smoothed level + explanatory variables components</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a><span class="kw">plot</span>(Data[, <span class="kw">c</span>(<span class="st">&quot;drivers&quot;</span>)], <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="fl">6.95</span>, <span class="fl">8.1</span>),</span>
+<span id="cb4-49"><a href="#cb4-49"></a>     <span class="dt">xlab =</span> <span class="st">&quot;year&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;logarithm of drivers&quot;</span>)</span>
+<span id="cb4-50"><a href="#cb4-50"></a><span class="kw">lines</span>(<span class="kw">seq</span>(<span class="kw">tsp</span>(Data)[<span class="dv">1</span>], <span class="kw">tsp</span>(Data)[<span class="dv">2</span>], <span class="dv">1</span><span class="op">/</span><span class="kw">tsp</span>(Data)[<span class="dv">3</span>]), </span>
+<span id="cb4-51"><a href="#cb4-51"></a>      fit<span class="op">$</span>smoothed<span class="op">$</span>level <span class="op">+</span><span class="st"> </span>fit<span class="op">$</span>smoothed<span class="op">$</span>addvar, <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb4-52"><a href="#cb4-52"></a><span class="kw">legend</span>(<span class="dv">1978</span>, <span class="fl">8.09</span>, <span class="kw">c</span>(<span class="st">&quot;log(drivers)&quot;</span>, <span class="st">&quot;level + regression effects&quot;</span>), </span>
+<span id="cb4-53"><a href="#cb4-53"></a>       <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">lwd=</span><span class="kw">c</span>(<span class="fl">2.5</span>, <span class="fl">2.5</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>))</span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>Plotting the stochastic seasonal, we can see that it barely changes over time, which is in line with the near zero value of its variance. It might be worthwhile to set the seasonal component to be deterministic, while letting the level be stochastic. I’ll leave that as an exercise for you. You can compare the AICs of both models, and see which one scores better!</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Plot the stochastic seasonal and irregular as well</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Plot the stochastic seasonal</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="kw">plot</span>(<span class="kw">seq</span>(<span class="kw">tsp</span>(Data)[<span class="dv">1</span>], <span class="kw">tsp</span>(Data)[<span class="dv">2</span>], <span class="dv">1</span><span class="op">/</span><span class="kw">tsp</span>(Data)[<span class="dv">3</span>]), </span>
 <span id="cb5-3"><a href="#cb5-3"></a>     fit<span class="op">$</span>smoothed<span class="op">$</span>BSM12,</span>
 <span id="cb5-4"><a href="#cb5-4"></a>     <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.3</span>),</span>
@@ -505,37 +518,38 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-25"><a href="#cb7-25"></a>H_format &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb7-26"><a href="#cb7-26"></a></span>
 <span id="cb7-27"><a href="#cb7-27"></a><span class="co"># Fitting the model</span></span>
-<span id="cb7-28"><a href="#cb7-28"></a>fit &lt;-<span class="st"> </span><span class="kw">StateSpaceFit</span>(<span class="dt">y =</span> y,</span>
-<span id="cb7-29"><a href="#cb7-29"></a>                     <span class="dt">H_format =</span> H_format,</span>
-<span id="cb7-30"><a href="#cb7-30"></a>                     <span class="dt">local_level_ind =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb7-31"><a href="#cb7-31"></a>                     <span class="dt">BSM_vec =</span> <span class="dv">12</span>,</span>
-<span id="cb7-32"><a href="#cb7-32"></a>                     <span class="dt">addvar_list =</span> addvar_list,</span>
-<span id="cb7-33"><a href="#cb7-33"></a>                     <span class="dt">format_level =</span> format_level, </span>
-<span id="cb7-34"><a href="#cb7-34"></a>                     <span class="dt">format_BSM_list =</span> format_BSM_list,</span>
-<span id="cb7-35"><a href="#cb7-35"></a>                     <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
-<span id="cb7-36"><a href="#cb7-36"></a>                     <span class="dt">initial =</span> <span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">diag</span>(<span class="kw">var</span>(y))))</span>
-<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-05-12 15:03:57</span></span>
-<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1 1 1 1</span></span>
-<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt; initial  value 0.389588 </span></span>
-<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; iter  10 value -1.583528</span></span>
-<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt; iter  20 value -1.676129</span></span>
-<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; iter  30 value -1.676530</span></span>
-<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt; final  value -1.676537 </span></span>
-<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt; converged</span></span>
-<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-05-12 15:04:47</span></span>
-<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; Time difference of 50.3218829631805 secs</span></span></code></pre></div>
+<span id="cb7-28"><a href="#cb7-28"></a>fit &lt;-<span class="st"> </span><span class="kw">statespacer</span>(<span class="dt">y =</span> y,</span>
+<span id="cb7-29"><a href="#cb7-29"></a>                   <span class="dt">H_format =</span> H_format,</span>
+<span id="cb7-30"><a href="#cb7-30"></a>                   <span class="dt">local_level_ind =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb7-31"><a href="#cb7-31"></a>                   <span class="dt">BSM_vec =</span> BSM_vec,</span>
+<span id="cb7-32"><a href="#cb7-32"></a>                   <span class="dt">addvar_list =</span> addvar_list,</span>
+<span id="cb7-33"><a href="#cb7-33"></a>                   <span class="dt">format_level =</span> format_level, </span>
+<span id="cb7-34"><a href="#cb7-34"></a>                   <span class="dt">format_BSM_list =</span> format_BSM_list,</span>
+<span id="cb7-35"><a href="#cb7-35"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
+<span id="cb7-36"><a href="#cb7-36"></a>                   <span class="dt">initial =</span> <span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">diag</span>(<span class="kw">var</span>(y))),</span>
+<span id="cb7-37"><a href="#cb7-37"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-13 14:23:03</span></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1 1 1 1</span></span>
+<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; initial  value 0.389588 </span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt; iter  10 value -1.583525</span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; iter  20 value -1.676129</span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt; iter  30 value -1.676530</span></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt; final  value -1.676537 </span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt; converged</span></span>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-13 14:23:23</span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt; Time difference of 20.1643979549408 secs</span></span></code></pre></div>
 <p>Checking out the estimates and plotting the levels:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># The estimated variance - covariance matrix of the observation disturbance</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt;             [,1]        [,2]</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; [1,] 0.005402172 0.004449537</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; [2,] 0.004449537 0.008566860</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; [1,] 0.005402166 0.004449533</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; [2,] 0.004449533 0.008566858</span></span>
 <span id="cb8-6"><a href="#cb8-6"></a></span>
 <span id="cb8-7"><a href="#cb8-7"></a><span class="co"># The estimated variance - covariance matrix of the level disturbance</span></span>
 <span id="cb8-8"><a href="#cb8-8"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>Q<span class="op">$</span>level</span>
 <span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt;              [,1]         [,2]</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; [1,] 0.0002556382 0.0002247037</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; [2,] 0.0002247037 0.0002319563</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; [1,] 0.0002556392 0.0002247045</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; [2,] 0.0002247045 0.0002319561</span></span>
 <span id="cb8-12"><a href="#cb8-12"></a></span>
 <span id="cb8-13"><a href="#cb8-13"></a><span class="co"># Coefficients + T-stats</span></span>
 <span id="cb8-14"><a href="#cb8-14"></a>coeff &lt;-<span class="st"> </span><span class="kw">cbind</span>(</span>
@@ -547,12 +561,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb8-20"><a href="#cb8-20"></a><span class="kw">colnames</span>(coeff) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Variable&quot;</span>, <span class="st">&quot;Coefficient&quot;</span>, <span class="st">&quot;T-Stat&quot;</span>)</span>
 <span id="cb8-21"><a href="#cb8-21"></a>coeff</span>
 <span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt;      Variable            Coefficient            T-Stat              </span></span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="co">#&gt; [1,] &quot;front PetrolPrice&quot; &quot;-0.307614976368415&quot;   &quot;-2.8986113778144&quot;  </span></span>
-<span id="cb8-24"><a href="#cb8-24"></a><span class="co">#&gt; [2,] &quot;front kms&quot;         &quot;0.151804327080036&quot;    &quot;1.16776361125407&quot;  </span></span>
-<span id="cb8-25"><a href="#cb8-25"></a><span class="co">#&gt; [3,] &quot;front law&quot;         &quot;-0.337045865872819&quot;   &quot;-6.84659512458969&quot; </span></span>
-<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#&gt; [4,] &quot;rear PetrolPrice&quot;  &quot;-0.0857576087847562&quot;  &quot;-0.764053664481983&quot;</span></span>
-<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#&gt; [5,] &quot;rear kms&quot;          &quot;0.550390286928824&quot;    &quot;3.79270161272422&quot;  </span></span>
-<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#&gt; [6,] &quot;rear law&quot;          &quot;0.000887620255411288&quot; &quot;0.017133129436154&quot;</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="co">#&gt; [1,] &quot;front PetrolPrice&quot; &quot;-0.307614724757934&quot;   &quot;-2.89859452991685&quot; </span></span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="co">#&gt; [2,] &quot;front kms&quot;         &quot;0.151804533911315&quot;    &quot;1.16776553839529&quot;  </span></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="co">#&gt; [3,] &quot;front law&quot;         &quot;-0.337045855757879&quot;   &quot;-6.84659000022703&quot; </span></span>
+<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#&gt; [4,] &quot;rear PetrolPrice&quot;  &quot;-0.0857571166694399&quot;  &quot;-0.763994133813057&quot;</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#&gt; [5,] &quot;rear kms&quot;          &quot;0.55038864207041&quot;     &quot;3.7926934801759&quot;   </span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#&gt; [6,] &quot;rear law&quot;          &quot;0.000887675974277226&quot; &quot;0.0171342279607704&quot;</span></span>
 <span id="cb8-29"><a href="#cb8-29"></a></span>
 <span id="cb8-30"><a href="#cb8-30"></a><span class="co"># plot of level for &quot;front&quot;</span></span>
 <span id="cb8-31"><a href="#cb8-31"></a><span class="kw">plot</span>(<span class="kw">seq</span>(<span class="kw">tsp</span>(Data)[<span class="dv">1</span>], <span class="kw">tsp</span>(Data)[<span class="dv">2</span>], <span class="dv">1</span><span class="op">/</span><span class="kw">tsp</span>(Data)[<span class="dv">3</span>]), </span>
@@ -568,8 +582,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>We see that the levels closely resemble each other. In fact, their correlation is almost equal to 1:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>Q_correlation_matrix<span class="op">$</span>level</span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt;           [,1]      [,2]</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; [1,] 1.0000000 0.9227716</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt; [2,] 0.9227716 1.0000000</span></span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; [1,] 1.0000000 0.9227738</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt; [2,] 0.9227738 1.0000000</span></span></code></pre></div>
 <p>It is possible to restrict the rank of the variance - covariance matrix of the level component to be 1. This can be done by setting <code>format_level</code> as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>format_level &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb11-2"><a href="#cb11-2"></a>format_level[, <span class="dv">1</span>] &lt;-<span class="st"> </span><span class="dv">1</span></span></code></pre></div>

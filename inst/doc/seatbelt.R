@@ -13,8 +13,6 @@ library(datasets)
 Data <- Seatbelts
 
 # Data preparation
-Data <- Seatbelts
-
 # The log of "drivers", "front", and "rear" will be used as dependent variables
 # The log of "PetrolPrice" and "kms" will be used as explanatory variables
 Data[, c("drivers", "front", "rear", "PetrolPrice", "kms")] <- log(Data[, c("drivers", "front", "rear", "PetrolPrice", "kms")])
@@ -42,14 +40,15 @@ format_level <- matrix(0)
 format_BSM_list <- list(matrix(0))
 
 # Fitting the model
-fit <- StateSpaceFit(y = y,
-                     local_level_ind = TRUE,
-                     BSM_vec = BSM_vec,
-                     addvar_list = addvar_list,
-                     format_level = format_level, 
-                     format_BSM_list = format_BSM_list,
-                     method = "BFGS",
-                     initial = 0.5 * log(var(y)))
+fit <- statespacer(y = y,
+                   local_level_ind = TRUE,
+                   BSM_vec = BSM_vec,
+                   addvar_list = addvar_list,
+                   format_level = format_level, 
+                   format_BSM_list = format_BSM_list,
+                   method = "BFGS",
+                   initial = 0.5 * log(var(y)),
+                   verbose = TRUE)
 
 ## ---- fig.height = 4.5, fig.width = 7-----------------------------------------
 # The estimated variance of the observation disturbance
@@ -76,14 +75,15 @@ legend(1978, 8.09, c("log(drivers)", "level + regression effects"),
 # By setting the entries in the format to 1, the component becomes stochastic
 format_level <- matrix(1)
 format_BSM_list <- list(matrix(1))
-fit <- StateSpaceFit(y = y,
-                     local_level_ind = TRUE,
-                     BSM_vec = BSM_vec,
-                     addvar_list = addvar_list,
-                     format_level = format_level,
-                     format_BSM_list = format_BSM_list,
-                     method = "BFGS",
-                     initial = log(var(y)))
+fit <- statespacer(y = y,
+                   local_level_ind = TRUE,
+                   BSM_vec = BSM_vec,
+                   addvar_list = addvar_list,
+                   format_level = format_level,
+                   format_BSM_list = format_BSM_list,
+                   method = "BFGS",
+                   initial = log(var(y)),
+                   verbose = TRUE)
 
 # The estimated variance of the observation disturbance
 fit$system_matrices$H$H
@@ -109,7 +109,7 @@ legend(1978, 8.09, c("log(drivers)", "level + regression effects"),
        lty = c(1,1), lwd=c(2.5, 2.5), col = c("black", "red"))
 
 ## ---- fig.height = 4.5, fig.width = 7-----------------------------------------
-# Plot the stochastic seasonal and irregular as well
+# Plot the stochastic seasonal
 plot(seq(tsp(Data)[1], tsp(Data)[2], 1/tsp(Data)[3]), 
      fit$smoothed$BSM12,
      type = "l", ylim = c(-0.2, 0.3),
@@ -151,15 +151,16 @@ format_BSM_list <- list(matrix(0, 2, 2))
 H_format <- matrix(1, 2, 2)
 
 # Fitting the model
-fit <- StateSpaceFit(y = y,
-                     H_format = H_format,
-                     local_level_ind = TRUE,
-                     BSM_vec = 12,
-                     addvar_list = addvar_list,
-                     format_level = format_level, 
-                     format_BSM_list = format_BSM_list,
-                     method = "BFGS",
-                     initial = 0.5 * log(diag(var(y))))
+fit <- statespacer(y = y,
+                   H_format = H_format,
+                   local_level_ind = TRUE,
+                   BSM_vec = BSM_vec,
+                   addvar_list = addvar_list,
+                   format_level = format_level, 
+                   format_BSM_list = format_BSM_list,
+                   method = "BFGS",
+                   initial = 0.5 * log(diag(var(y))),
+                   verbose = TRUE)
 
 ## ---- fig.height = 4.5, fig.width = 7-----------------------------------------
 # The estimated variance - covariance matrix of the observation disturbance

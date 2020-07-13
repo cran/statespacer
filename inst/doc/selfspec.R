@@ -112,11 +112,12 @@ initial <- c(-1.27000018, -2.82637721, -1.35280609, -1.74569078,
              2.99984132, 8.16851107, -2.28360681, -0.45333494)
 
 ## -----------------------------------------------------------------------------
-fit <- StateSpaceFit(y = y,
-                     self_spec_list = self_spec_list,
-                     collapse = TRUE,
-                     initial = initial,
-                     method = "BFGS")
+fit <- statespacer(y = y,
+                   self_spec_list = self_spec_list,
+                   collapse = TRUE,
+                   initial = initial,
+                   method = "BFGS",
+                   verbose = TRUE)
 
 ## -----------------------------------------------------------------------------
 # The level beta_1
