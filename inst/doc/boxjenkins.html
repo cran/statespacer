@@ -350,14 +350,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb1-13"><a href="#cb1-13"></a>                   <span class="dt">format_level =</span> <span class="kw">matrix</span>(<span class="dv">0</span>),</span>
 <span id="cb1-14"><a href="#cb1-14"></a>                   <span class="dt">initial =</span> <span class="kw">c</span>(<span class="fl">0.5</span><span class="op">*</span><span class="kw">log</span>(<span class="kw">var</span>(Data)), <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
 <span id="cb1-15"><a href="#cb1-15"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-13 14:22:57</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-15 23:43:29</span></span>
 <span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1 1</span></span>
 <span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; initial  value 5.022561 </span></span>
 <span id="cb1-19"><a href="#cb1-19"></a><span class="co">#&gt; iter  10 value 4.114363</span></span>
 <span id="cb1-20"><a href="#cb1-20"></a><span class="co">#&gt; final  value 4.111163 </span></span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt; converged</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-13 14:22:57</span></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; Time difference of 0.165290117263794 secs</span></span></code></pre></div>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-15 23:43:29</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; Time difference of 0.14882493019104 secs</span></span></code></pre></div>
 <p>Note that we eliminate the observation error by setting its variance to 0, although it’s perfectly fine to include observation errors along with ARIMA models, as long as you watch out for identification issues of course. For details about specifying proper initial values, please see <code>vignette(&quot;dictionary&quot;, &quot;statespacer&quot;)</code>.</p>
 <p>We obtain the following estimates:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Coefficients of the ARMA component</span></span>
@@ -409,13 +409,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-10"><a href="#cb3-10"></a>                   <span class="dt">sarima_list =</span> sarima_list,</span>
 <span id="cb3-11"><a href="#cb3-11"></a>                   <span class="dt">initial =</span> <span class="kw">c</span>(<span class="fl">0.5</span><span class="op">*</span><span class="kw">log</span>(<span class="kw">var</span>(<span class="kw">diff</span>(Data))), <span class="dv">0</span>, <span class="dv">0</span>),</span>
 <span id="cb3-12"><a href="#cb3-12"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-13 14:22:57</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-07-15 23:43:29</span></span>
 <span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1</span></span>
 <span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; initial  value -1.034434 </span></span>
 <span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; final  value -1.616321 </span></span>
 <span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; converged</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-13 14:22:58</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Time difference of 0.867475986480713 secs</span></span></code></pre></div>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-07-15 23:43:30</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Time difference of 0.835811853408813 secs</span></span></code></pre></div>
 <p>We obtain the following estimates:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Coefficients of the ARMA component</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>arma_coeff &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
