@@ -281,12 +281,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>P_star</code> is the non-diffuse part of <code>P</code>.</li>
 <li><code>a_fc</code> is the predicted state for time <span class="math inline">\(N ~ + ~ 1\)</span> (<span class="math inline">\(N\)</span> being the last observed timepoint).</li>
 <li><code>P_fc</code> is the uncertainty of <code>a_fc</code>.</li>
+<li><code>P_inf_fc</code> is the diffuse part of <code>P_fc</code>.</li>
+<li><code>P_star_fc</code> is the non-diffuse part of <code>P_fc</code>.</li>
 </ul>
 <p>Further, the contributions of the components to the predicted values are extracted separately.</p>
 </div>
 <div id="filtered" class="section level3">
 <h3>filtered</h3>
-<p><code>filtered</code> is a list that contains the filtered (estimates for time <span class="math inline">\(t\)</span> using data up to time <span class="math inline">\(t\)</span>) objects as returned by the Kalman filter. Here, <code>a</code> is the filtered state, and <code>P</code> the uncertainty of the filtered state. Further, the filtered values of the components are extracted separately.</p>
+<p><code>filtered</code> is a list that contains the filtered (estimates for time <span class="math inline">\(t\)</span> using data up to time <span class="math inline">\(t\)</span>) objects as returned by the Kalman filter. Here, <code>a</code> is the filtered state, <code>P</code> the uncertainty of the filtered state, <code>P_inf</code> is the diffuse part of <code>P</code>, and <code>P_star</code> is the non-diffuse part of <code>P</code>. Further, the filtered values of the components are extracted separately.</p>
 </div>
 <div id="smoothed" class="section level3">
 <h3>smoothed</h3>
@@ -311,6 +313,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>BIC</code> is the Bayesian Information Criterion for the model.</li>
 <li><code>r</code> is the scaled smoothed state disturbance.</li>
 <li><code>N</code> is the uncertainty of <code>r</code>.</li>
+<li><code>param_indices</code> is a list containing the indices of the parameters in the parameter vector for each of the components.</li>
+<li><code>hessian</code> is the hessian of the loglikelihood evaluated at the estimated parameters.</li>
+</ul>
+<p>The following objects are only returned if <code>diagnostics = TRUE</code>:</p>
+<ul>
 <li><code>e</code> is the smoothing error.</li>
 <li><code>D</code> is the uncertainty of <code>e</code>.</li>
 <li><code>Tstat_observation</code> is the T-statistic for testing whether deviations from the observation equation are significant.</li>
@@ -325,13 +332,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>Box_Ljung_criticalvalues</code> are the critical values of the Box-Ljung tests.</li>
 <li><code>Heteroscedasticity</code> are statistics for testing for heteroscedasticity.</li>
 <li><code>Heteroscedasticity_criticalvalues</code> are the critical values of the heteroscedasticity tests.</li>
-<li><code>param_indices</code> is a list containing the indices of the parameters in the parameter vector for each of the components.</li>
-<li><code>hessian</code> is the hessian of the loglikelihood evaluated at the estimated parameters.</li>
 </ul>
 </div>
 <div id="optim" class="section level3">
 <h3>optim</h3>
-<p><code>optim</code> is the list as returned by <code>stats::optim</code> or <code>optimx::optimr</code>, depending on if you have optimx installed. See <code>?stats::optim</code> and <code>?optimx::optimr</code> for details.</p>
+<p><code>optim</code> is the list as returned by <code>stats::optim</code> or <code>optimx::optimr</code>, depending on if you have optimx installed. See <code>?stats::optim</code> and <code>?optimx::optimr</code> for details. Only returned if <code>fit = TRUE</code>.</p>
 </div>
 <div id="loglik_fun" class="section level3">
 <h3>loglik_fun</h3>
@@ -339,7 +344,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="standard_errors" class="section level3">
 <h3>standard_errors</h3>
-<p><code>standard_errors</code> is a list that contains the standard errors for the transformed parameters. Its structure mimicks the structure from <code>system_matrices</code>, but only representing those system matrices that depend on the parameters.</p>
+<p><code>standard_errors</code> is a list that contains the standard errors for the transformed parameters. Its structure mimicks the structure from <code>system_matrices</code>, but only representing those system matrices that depend on the parameters. Only returned if <code>standard_errors = TRUE</code>.</p>
 </div>
 </div>
 <div id="order-of-parameter-input" class="section level2">

@@ -34,6 +34,7 @@ statespacer(
   method = "BFGS",
   control = list(),
   collapse = FALSE,
+  diagnostics = TRUE,
   standard_errors = NULL,
   verbose = FALSE
 )
@@ -165,9 +166,12 @@ observation vector exceeds the dimensionality of the state vector.
 If this is the case, computational gains can be achieved by collapsing
 the observation vector.}
 
+\item{diagnostics}{Boolean indicating whether diagnostical tests should be
+computed. Defaults to \code{TRUE}.}
+
 \item{standard_errors}{Boolean indicating whether standard errors should be
 computed. \pkg{numDeriv} must be installed in order to compute the
-standard errors! Defaults to TRUE if \pkg{numDeriv} is available.}
+standard errors! Defaults to \code{TRUE} if \pkg{numDeriv} is available.}
 
 \item{verbose}{Boolean indicating whether the progress of the optimisation
 procedure should be printed. Only used if \code{fit = TRUE}.}
