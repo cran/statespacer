@@ -43,6 +43,54 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -339,7 +387,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p><span class="math display">\[
 \begin{aligned}
  y_t(\tau) ~ &amp;= ~ \beta_{1t} ~ + \beta_{2t} \left( \frac{1 ~ - ~ e^{-\lambda\tau}}{\lambda\tau}  \right) ~ + ~ \beta_{3t} \left( \frac{1 ~ - ~ e^{-\lambda\tau}}{\lambda\tau} ~ - ~ e^{-\lambda\tau}  \right) ~ + ~ \varepsilon_t(\tau), &amp;\varepsilon_t ~ &amp;\sim ~ N(0, ~ \sigma^2I_p), \\
- \beta_t ~ &amp;= ~ \left( I ~ - ~ \Phi\right)\mu ~ + ~ \Phi\beta_t + \eta_t, &amp;\eta_t ~ &amp;\sim ~ N(0, ~ \Sigma_{\eta}), \\ 
+ \beta_{t+1} ~ &amp;= ~ \left( I ~ - ~ \Phi\right)\mu ~ + ~ \Phi\beta_t + \eta_t, &amp;\eta_t ~ &amp;\sim ~ N(0, ~ \Sigma_{\eta}), \\ 
   &amp; &amp;\beta_1 ~ &amp;\sim ~ N(\mu, ~ P_{\beta}),
 \end{aligned}
 \]</span></p>
@@ -463,13 +511,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-4"><a href="#cb7-4"></a>                   <span class="dt">initial =</span> initial,</span>
 <span id="cb7-5"><a href="#cb7-5"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
 <span id="cb7-6"><a href="#cb7-6"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-09-15 22:43:15</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-11-19 19:55:25</span></span>
 <span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; Parameter scaling: [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span></span>
 <span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; initial  value -7.005119 </span></span>
 <span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; final  value -7.005119 </span></span>
 <span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; converged</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-09-15 22:43:15</span></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt; Time difference of 0.47987699508667 secs</span></span></code></pre></div>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-11-19 19:55:25</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt; Time difference of 0.219872951507568 secs</span></span></code></pre></div>
 <p>Now, let us take a look at the smoothed factors:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># The level beta_1</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="kw">plot</span>(years, fit<span class="op">$</span>smoothed<span class="op">$</span>a[, <span class="dv">1</span>], <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, </span>

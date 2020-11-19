@@ -30,6 +30,9 @@ double LogLikC(const Rcpp::NumericMatrix& y,
   // Number of observations, dependent variables, and state parameters
   int N = y.nrow(), p = y.ncol(), m = a.n_rows;
 
+  // Keep track of the limits of the indices
+  int N_min1 = N - 1, p_min1 = p - 1;
+
   // Check which system matrices are time-varying
   bool Z_tv = Z.n_slices > 1, T_tv = T.n_slices > 1,
        R_tv = R.n_slices > 1, Q_tv = Q.n_slices > 1;
@@ -38,6 +41,9 @@ double LogLikC(const Rcpp::NumericMatrix& y,
   arma::mat Z_mat = Z.slice(0), T_mat = T.slice(0),
             R_mat = R.slice(0), Q_mat = Q.slice(0);
   arma::rowvec Z_row = Z_mat.row(0);
+
+  // Indicator for whether the first row should be assigned
+  bool row_assign = Z_tv || p > 1;
 
   // Check if P_inf is already 0
   bool initialisation = !arma::all(arma::vectorise(arma::abs(P_inf)) < 1e-7);
@@ -55,10 +61,13 @@ double LogLikC(const Rcpp::NumericMatrix& y,
   double F_inf, F_star, F_1, F_2, v;
   double constant = -log(2 * M_PI) / 2;
 
-  // Loop over timepoints
-  for (int i = 0; i < N; i++) {
+  // Iterators
+  int i, j;
 
-    // Get system matrices of current timepoint
+  // Loop over time points
+  for (i = 0; i < N; i++) {
+
+    // Get system matrices of current time point
     if (Z_tv && i > 0) {
       Z_mat = Z.slice(i);
     }
@@ -73,7 +82,7 @@ double LogLikC(const Rcpp::NumericMatrix& y,
     }
 
     // Loop over dependent variables
-    for (int j = 0; j < p; j++) {
+    for (j = 0; j < p; j++) {
 
       // Check for missing value
       if (y_isna(i, j)) {
@@ -81,7 +90,7 @@ double LogLikC(const Rcpp::NumericMatrix& y,
       }
 
       // Retrieve row of Z
-      if (i > 0 || j > 0) {
+      if (j > 0 || (i > 0 && row_assign)) {
         Z_row = Z_mat.row(j);
       }
 
@@ -145,7 +154,9 @@ double LogLikC(const Rcpp::NumericMatrix& y,
         }
 
         // Check if P_inf converged to 0
-        initialisation = !arma::all(arma::vectorise(arma::abs(P_inf)) < 1e-7);
+        if (j < p_min1) {
+          initialisation = !arma::all(arma::vectorise(arma::abs(P_inf)) < 1e-7);
+        }
 
       } else {
 
@@ -185,11 +196,14 @@ double LogLikC(const Rcpp::NumericMatrix& y,
       }
     }
 
-    // Perform computations for the next timepoint
-    a = T_mat * a;
-    P_star = T_mat * P_star * T_mat.t() + R_mat * Q_mat * R_mat.t();
-    if (initialisation) {
-      P_inf = T_mat * P_inf * T_mat.t();
+    // Perform computations for the next time point
+    if (i < N_min1) {
+      a = T_mat * a;
+      P_star = T_mat * P_star * T_mat.t() + R_mat * Q_mat * R_mat.t();
+      if (initialisation) {
+        P_inf = T_mat * P_inf * T_mat.t();
+        initialisation = !arma::all(arma::vectorise(arma::abs(P_inf)) < 1e-7);
+      }
     }
   }
 

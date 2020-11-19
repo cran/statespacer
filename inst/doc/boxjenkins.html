@@ -43,6 +43,54 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -350,14 +398,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb1-13"><a href="#cb1-13"></a>                   <span class="dt">format_level =</span> <span class="kw">matrix</span>(<span class="dv">0</span>),</span>
 <span id="cb1-14"><a href="#cb1-14"></a>                   <span class="dt">initial =</span> <span class="kw">c</span>(<span class="fl">0.5</span><span class="op">*</span><span class="kw">log</span>(<span class="kw">var</span>(Data)), <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
 <span id="cb1-15"><a href="#cb1-15"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-09-15 22:41:54</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-11-19 19:54:49</span></span>
 <span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1 1</span></span>
 <span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; initial  value 5.022561 </span></span>
 <span id="cb1-19"><a href="#cb1-19"></a><span class="co">#&gt; iter  10 value 4.114363</span></span>
 <span id="cb1-20"><a href="#cb1-20"></a><span class="co">#&gt; final  value 4.111163 </span></span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt; converged</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-09-15 22:41:55</span></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; Time difference of 0.654881000518799 secs</span></span></code></pre></div>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-11-19 19:54:49</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; Time difference of 0.160907030105591 secs</span></span></code></pre></div>
 <p>Note that we eliminate the observation error by setting its variance to 0, although it’s perfectly fine to include observation errors along with ARIMA models, as long as you watch out for identification issues of course. For details about specifying proper initial values, please see <code>vignette(&quot;dictionary&quot;, &quot;statespacer&quot;)</code>.</p>
 <p>We obtain the following estimates:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Coefficients of the ARMA component</span></span>
@@ -409,13 +457,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-10"><a href="#cb3-10"></a>                   <span class="dt">sarima_list =</span> sarima_list,</span>
 <span id="cb3-11"><a href="#cb3-11"></a>                   <span class="dt">initial =</span> <span class="kw">c</span>(<span class="fl">0.5</span><span class="op">*</span><span class="kw">log</span>(<span class="kw">var</span>(<span class="kw">diff</span>(Data))), <span class="dv">0</span>, <span class="dv">0</span>),</span>
 <span id="cb3-12"><a href="#cb3-12"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-09-15 22:41:56</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-11-19 19:54:50</span></span>
 <span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1</span></span>
 <span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; initial  value -1.034434 </span></span>
 <span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; final  value -1.616321 </span></span>
 <span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; converged</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-09-15 22:41:58</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Time difference of 2.06409502029419 secs</span></span></code></pre></div>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-11-19 19:54:50</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Time difference of 0.852508068084717 secs</span></span></code></pre></div>
 <p>We obtain the following estimates:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Coefficients of the ARMA component</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>arma_coeff &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>

@@ -43,6 +43,54 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -381,13 +429,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-29"><a href="#cb2-29"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
 <span id="cb2-30"><a href="#cb2-30"></a>                   <span class="dt">initial =</span> <span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">var</span>(y)),</span>
 <span id="cb2-31"><a href="#cb2-31"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb2-32"><a href="#cb2-32"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-09-15 22:42:05</span></span>
+<span id="cb2-32"><a href="#cb2-32"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-11-19 19:54:53</span></span>
 <span id="cb2-33"><a href="#cb2-33"></a><span class="co">#&gt; Parameter scaling:[1] 1</span></span>
 <span id="cb2-34"><a href="#cb2-34"></a><span class="co">#&gt; initial  value -0.443442 </span></span>
 <span id="cb2-35"><a href="#cb2-35"></a><span class="co">#&gt; final  value -0.735372 </span></span>
 <span id="cb2-36"><a href="#cb2-36"></a><span class="co">#&gt; converged</span></span>
-<span id="cb2-37"><a href="#cb2-37"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-09-15 22:42:05</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#&gt; Time difference of 0.244669914245605 secs</span></span></code></pre></div>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-11-19 19:54:53</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#&gt; Time difference of 0.113934993743896 secs</span></span></code></pre></div>
 <p>Let’s check out the estimates:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># The estimated variance of the observation disturbance</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
@@ -430,7 +478,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb4-10"><a href="#cb4-10"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
 <span id="cb4-11"><a href="#cb4-11"></a>                   <span class="dt">initial =</span> <span class="kw">log</span>(<span class="kw">var</span>(y)),</span>
 <span id="cb4-12"><a href="#cb4-12"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-09-15 22:42:06</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-11-19 19:54:54</span></span>
 <span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1</span></span>
 <span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; initial  value -0.172423 </span></span>
 <span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; iter  10 value -0.893962</span></span>
@@ -438,8 +486,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; iter  30 value -0.915515</span></span>
 <span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; final  value -0.915517 </span></span>
 <span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; converged</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-09-15 22:42:09</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Time difference of 3.08107995986938 secs</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-11-19 19:54:55</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Time difference of 1.38520407676697 secs</span></span>
 <span id="cb4-23"><a href="#cb4-23"></a></span>
 <span id="cb4-24"><a href="#cb4-24"></a><span class="co"># The estimated variance of the observation disturbance</span></span>
 <span id="cb4-25"><a href="#cb4-25"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
@@ -528,7 +576,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-35"><a href="#cb7-35"></a>                   <span class="dt">method =</span> <span class="st">&quot;BFGS&quot;</span>,</span>
 <span id="cb7-36"><a href="#cb7-36"></a>                   <span class="dt">initial =</span> <span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">diag</span>(<span class="kw">var</span>(y))),</span>
 <span id="cb7-37"><a href="#cb7-37"></a>                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-09-15 22:42:10</span></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; Starting the optimisation procedure at: 2020-11-19 19:54:56</span></span>
 <span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt; Parameter scaling:[1] 1 1 1 1 1 1</span></span>
 <span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; initial  value 0.389588 </span></span>
 <span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt; iter  10 value -1.583525</span></span>
@@ -536,8 +584,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt; iter  30 value -1.676530</span></span>
 <span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt; final  value -1.676537 </span></span>
 <span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt; converged</span></span>
-<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-09-15 22:42:55</span></span>
-<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt; Time difference of 44.8629369735718 secs</span></span></code></pre></div>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; Finished the optimisation procedure at: 2020-11-19 19:55:16</span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt; Time difference of 20.3680260181427 secs</span></span></code></pre></div>
 <p>Checking out the estimates and plotting the levels:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># The estimated variance - covariance matrix of the observation disturbance</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>fit<span class="op">$</span>system_matrices<span class="op">$</span>H<span class="op">$</span>H</span>
