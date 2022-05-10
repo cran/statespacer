@@ -9,11 +9,10 @@ knitr::opts_chunk$set(
 library(statespacer)
 
 # Load the dataset
-library(YieldCurve)
 data("FedYieldCurve")
-y <- window(FedYieldCurve, start = "1984-12-31", end = "2000-12-01")
-years <- index(y) # Used for plots later on
-y <- as.matrix(y)
+y <- FedYieldCurve[FedYieldCurve$Month >= "1985-01-01" & FedYieldCurve$Month <= "2000-12-01", ]
+years <- y$Month # Used for plots later on
+y <- as.matrix(y[-1])
 
 ## -----------------------------------------------------------------------------
 # Specifying the list
