@@ -116,7 +116,8 @@ fit <- statespacer(y = y,
                    collapse = TRUE,
                    initial = initial,
                    method = "BFGS",
-                   verbose = TRUE)
+                   verbose = TRUE,
+                   standard_errors = TRUE)
 
 ## -----------------------------------------------------------------------------
 # The level beta_1

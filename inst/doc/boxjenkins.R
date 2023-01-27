@@ -19,7 +19,8 @@ fit <- statespacer(y = Data,
                    arima_list = list(c(3, 0, 0)),
                    format_level = matrix(0),
                    initial = c(0.5*log(var(Data)), 0, 0, 0),
-                   verbose = TRUE)
+                   verbose = TRUE,
+                   standard_errors = TRUE)
 
 ## -----------------------------------------------------------------------------
 # Coefficients of the ARMA component

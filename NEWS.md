@@ -1,3 +1,13 @@
+# statespacer 0.5.0
+
+## Extra functionality
+
+* Adds the option to generate forward simulations. See `?predict.statespacer` for details.
+
+## Bug Fixes
+
+* Fixes the returning of NA when calling `Cholesky()` without a format.
+
 # statespacer 0.4.1
 
 ## Removed dependency
